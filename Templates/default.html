@@ -1,0 +1,376 @@
+{% extends 'base.html' %} {% block body %}
+<style>
+    .nav-pills .grn .active {
+        border-radius: 0%;
+        border-bottom: 2pt solid #28a745;
+        background-color: white;
+        color: black;
+    }
+    
+    .nav-pills .rd .active {
+        border-radius: 0%;
+        border-bottom: 2pt solid #dc3545;
+        background-color: white;
+        color: black;
+    }
+    
+    body {
+        background-color: #79cbb8;
+    }
+    
+    .manual-color {
+        background-color: #500472, violet;
+    }
+</style>
+
+<div class="container pt-3 px-4">
+    <div class="border-0 ">
+
+        <ul class=" nav nav-justified justify-content-center md-tabs grey" role="tablist">
+            <li class="nav-item container grn">
+                <a class="nav-link active font-weight-bold" id="tab_login" data-toggle="tab" href="#login" role="tab">
+                    <span class="">
+                    Log<span class="bg-info text-white rounded font-weight-bold">IN</span>
+                    </span>
+                </a>
+            </li>
+            <li class="nav-item container rd">
+                <a class="nav-link font-weight-bold" id="tab_signup" data-toggle="tab" href="#signup" role="tab">
+                    <span class="">
+                    Sign<span class="bg-danger text-white rounded font-weight-bold">UP</span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content white" id="myClassicTabContent">
+
+            <div class="tab-pane fade active show" id="login" role="tabpanel" aria-labelledby="follow-tab-classic">
+                <div class="container col-sm-12 col-md-10 p-5">
+                    <p class="h1">
+                        Log<span class="bg-info text-white rounded font-weight-bold">IN</span>
+                    </p>
+                    <div class="mt-5 small">
+                        <div class="md-form">
+                            <input class="form-control" id="login_username" name="login_username" type="text" required/>
+                            <label for="login_signup" class="text-center">Username</label>
+                            <small class="text-danger" id="err_login_signup"></small>
+                        </div>
+                    </div>
+
+                    <div class="mt-2 small">
+                        <div class="md-form">
+                            <input class="form-control" id="login_password" name="login_password" type="password" required/>
+                            <label for="login_password" class="text-center">Password</label>
+                            <small class="text-danger" id="err_login_pwd"></small>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <a href="{% url 'forgot_password' %}" class=" btn btn-link text-center">Forgot Password</a>
+                    </div>
+
+                    <div class="mb-5">
+                        <button id="login_submit" type="submit" class="btn-rounded btn btn-outline-success btn-block my-4 waves-effect">Login</button>
+                    </div>
+                    <p id="res" class="alert text-center font-weight-bold">
+
+                    </p>
+                </div>
+            </div>
+
+            <div class="tab-pane fade " id="signup" role="tabpanel" aria-labelledby="profile-tab-classic">
+
+                <div id="signup-form">
+                    {% csrf_token %}
+                    <div class="container col-sm-12 col-md-10 p-5">
+                        <p class="h1">
+                            Sign<span class="bg-danger text-white rounded font-weight-bold">UP</span>
+                        </p>
+                        <div class="mt-5 small">
+                            <div class="md-form">
+                                <input class="form-control" id="UserName" name="username" type="text" required/>
+                                <label for="UserName" class="text-center">Username</label>
+                                <small class="text-danger" id="err_signup_username"></small>
+                            </div>
+                        </div>
+                        <div class="mt-2 small">
+                            <div class="md-form">
+                                <input class="form-control" id="email" name="email" type="email" required/>
+                                <label for="email" class="text-center">Email</label>
+                                <small class="text-danger" id="err_signup_email"></small>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 small">
+                            <div class="md-form">
+                                <input class="form-control" id="password" name="password" type="password" required/>
+                                <label for="password" class="text-center">Password</label>
+                                <small class="text-danger" id="err_signup_pwd"></small>
+                            </div>
+                        </div>
+                        <div class="mt-2 small">
+                            <div class="md-form">
+                                <input class="form-control" id="cpassword" name="password" type="password" required/>
+                                <label for="cpassword" class="text-center">Confirm Password</label>
+                                <small class="text-danger" id="err_signup_conf_pwd"></small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 btns">
+                            <button id="submit" type="submit" disabled class="disabled btn-rounded btn btn-outline-warning btn-block my-4 waves-effect" type="submit">Signup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<script>
+    var username = document.getElementById('UserName');
+    username.addEventListener('keyup',
+        () => {
+            if (username.value == '') {
+                username.classList.remove('is-valid');
+                username.classList.add('is-invalid');
+                document.getElementById('err_signup_username').innerHTML = 'Username is Required';
+            } else {
+                username.classList.remove('is-invalid');
+                username.classList.add('is-valid');
+                document.getElementById('err_signup_username').innerHTML = '';
+                checkUsername();
+            }
+            hasValid();
+        }
+    );
+
+    var email = document.getElementById('email');
+    email.addEventListener('keyup',
+        () => {
+            var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+            if (reg.test(email.value)) {
+                email.classList.remove('is-invalid');
+                email.classList.add('is-valid');
+                document.getElementById('err_signup_email').innerHTML = '';
+            } else if (email.value == '') {
+                email.classList.remove('is-valid');
+                email.classList.add('is-invalid');
+                document.getElementById('err_signup_email').innerHTML = 'Email is Required';
+            } else {
+                email.classList.remove('is-valid');
+                email.classList.add('is-invalid');
+                document.getElementById('err_signup_email').innerHTML = 'Email is Invalid Format';
+            }
+            hasValid();
+        }
+    );
+
+    function checkUsername() {
+        const replay = new XMLHttpRequest();
+
+        replay.onload = function() {
+            let responseValue = null;
+
+            try {
+                responseValue = JSON.parse(replay.responseText);
+            } catch (e) {
+                console.log("Could not parse json");
+            }
+            if (responseValue) {
+                if (responseValue.valid) {
+                    username.classList.remove('is-invalid');
+                    username.classList.add('is-valid');
+                    document.getElementById('err_signup_username').innerHTML = '';
+                } else {
+                    username.classList.remove('is-valid');
+                    username.classList.add('is-invalid');
+                    document.getElementById('err_signup_username').innerHTML = 'Username Already Exists';
+                }
+                hasValid();
+            }
+        };
+
+        let body = new FormData();
+        body.append('username', JSON.stringify(username.value));
+        body.append('checkUsername', JSON.stringify(1));
+
+        replay.open("POST", "{% url 'login' %}");
+        replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        replay.send(body);
+    }
+
+
+    var password = document.getElementById('password');
+    password.addEventListener('keyup',
+        () => {
+            var len = password.value.length;
+            if (password.value == '') {
+                password.classList.remove('is-invalid', 'is-valid');
+                document.getElementById('err_signup_pwd').innerHTML = 'Password is required';
+            } else if (len < 4) {
+                password.classList.add('is-invalid');
+                document.getElementById('err_signup_pwd').innerHTML = 'Password Must be 4 or more characters';
+            } else {
+                password.classList.remove('is-invalid');
+                document.getElementById('err_signup_pwd').innerHTML = '';
+            }
+            hasValid();
+        }
+    );
+
+    var cpassword = document.getElementById('cpassword');
+    cpassword.addEventListener('keyup',
+        () => {
+            var passwordString = password.value;
+            var cpasswordString = cpassword.value;
+
+            const len = cpassword.value.length;
+            if (cpasswordString == '' || passwordString == '') {
+                cpassword.classList.remove('is-invalid', 'is-valid');
+                document.getElementById('err_signup_conf_pwd').innerHTML = 'Confirm Password is required';
+            } else if (passwordString.slice(0, len) === cpasswordString) {
+                cpassword.classList.remove('is-invalid');
+                cpassword.classList.add('is-valid');
+                if (len == password.value.length) {
+                    if (len < 3) {
+                        cpassword.classList.remove('is-valid');
+                        cpassword.classList.add('is-invalid');
+                        document.getElementById('err_signup_conf_pwd').innerHTML = 'Password Must be more than 4 character';
+                    } else {
+                        password.classList.add('is-valid');
+                        document.getElementById('err_signup_conf_pwd').innerHTML = '';
+                    }
+                } else {
+                    password.classList.remove('is-valid');
+                    document.getElementById('err_signup_conf_pwd').innerHTML = '';
+                }
+            } else {
+                cpassword.classList.remove('is-valid');
+                cpassword.classList.add('is-invalid');
+                document.getElementById('err_signup_conf_pwd').innerHTML = 'Confirm Password is not match with Password';
+            }
+            hasValid();
+
+        }
+    );
+    document.getElementById('submit').addEventListener('click', function(e) {
+        e.target.setAttribute('disabled', 'disabled');
+        e.target.classList.add('disabled', 'btn-outline-warning');
+        e.target.classList.remove('btn-outline-danger');
+        const replay = new XMLHttpRequest();
+
+        replay.onload = function() {
+            let responseValue = null;
+
+            try {
+                responseValue = JSON.parse(replay.responseText);
+            } catch (e) {
+                console.log("Could not parse json");
+            }
+            if (responseValue) {
+                if (responseValue.valid) {
+                    document.getElementById('res').classList.add('alert-success');
+                    document.getElementById('res').classList.remove('alert-danger');
+                    document.getElementById('res').innerHTML = 'User \'' + responseValue.username + '\' Created Successfully';
+                    username.value = null;
+                    email.value = null;
+                    password.value = null;
+                    cpassword.value = null;
+                    username.classList.remove('is-valid', 'is-invalid');
+                    email.classList.remove('is-valid', 'is-invalid');
+                    password.classList.remove('is-valid', 'is-invalid');
+                    cpassword.classList.remove('is-valid', 'is-invalid');
+                    $('#login').tab('show');
+                    document.getElementById('tab_login').classList.add('active');
+                    document.getElementById('tab_signup').classList.remove('active');
+                } else {
+                    document.getElementById('res').classList.remove('alert-success');
+                    document.getElementById('res').classList.add('alert-danger');
+                    document.getElementById('res').innerHTML = 'Some Error occur';
+                }
+
+            }
+        };
+        let body = new FormData();
+        body.append('username', JSON.stringify(username.value));
+        body.append('email', JSON.stringify(email.value));
+        body.append('password', JSON.stringify(password.value));
+        body.append('checkUsername', JSON.stringify(0));
+        body.append('signup', JSON.stringify(1));
+
+        replay.open("POST", "{% url 'login' %}");
+        replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        replay.send(body);
+    });
+
+
+    function hasValid() {
+        data = {
+            username: document.getElementById('UserName').classList.contains('is-valid'),
+            email: document.getElementById('email').classList.contains('is-valid'),
+            password: document.getElementById('password').classList.contains('is-valid'),
+            cpassword: document.getElementById('cpassword').classList.contains('is-valid'),
+            submit: document.getElementById('submit')
+        }
+        var valid = false;
+        if (data.username && data.email && data.password && data.cpassword) {
+            valid = true;
+        }
+        if (valid) {
+            data.submit.removeAttribute('disabled');
+            data.submit.classList.remove('disabled', 'btn-outline-warning');
+            data.submit.classList.add('btn-outline-danger');
+        } else {
+            data.submit.setAttribute('disabled', 'disabled');
+            data.submit.classList.add('disabled', 'btn-outline-warning');
+            data.submit.classList.remove('btn-outline-danger');
+        }
+    }
+
+    document.getElementById('login_submit').addEventListener('click', function(e) {
+        var sendData = {
+            username: document.getElementById('login_username'),
+            password: document.getElementById('login_password')
+        };
+        const replay = new XMLHttpRequest();
+
+        replay.onload = function() {
+            let responseValue = null;
+
+            try {
+                responseValue = JSON.parse(replay.responseText);
+            } catch (e) {
+                console.log("Could not parse json");
+            }
+            if (responseValue) {
+                console.log(responseValue);
+                sendData.username.value = responseValue.username;
+                sendData.password.value = responseValue.pwd;
+                if (responseValue.valid) {
+                    document.getElementById('res').classList.add('alert-success');
+                    document.getElementById('res').classList.remove('alert-danger');
+                    document.getElementById('res').innerHTML = 'Login Successfully';
+                    window.location = 'home/';
+                } else {
+                    document.getElementById('res').classList.remove('alert-success');
+                    document.getElementById('res').classList.add('alert-danger');
+                    document.getElementById('res').innerHTML = responseValue.msg;
+                }
+            }
+        };
+        let body = new FormData();
+        body.append('username', JSON.stringify(sendData.username.value));
+        body.append('password', JSON.stringify(sendData.password.value));
+        body.append('checkUsername', JSON.stringify(0));
+        body.append('signup', JSON.stringify(0));
+
+        replay.open("POST", "{% url 'login' %}");
+        replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        replay.send(body);
+    });
+</script>
+{% endblock body %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% block body %}
+<div class="container p-md-5 pt-5">
+    <div class="border-0">
+        <form method="POST" enctype="multipart/form-data" action="{% url 'update_image' %}">
+            {%csrf_token%}
+            <div class="container col-sm-6 col-md-8 p-md-5 pt-5">
+                <p class="h1">
+                    Change
+                    <span class="bg-info text-white rounded font-weight-bold">Image</span>
+                </p>
+                <div id="forgot_content">
+                    <div class="mt-5 small">
+                        <div class="md-form">
+                            <input class="form-control" value="{{user.username}}" type="text" disabled/>
+                            <label class="text-center">Current User</label>
+                            <small class="text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="mt-5 small">
+                        <div class="md-form">
+                            <input class="form-control border-0" id="image" name="image" type="file" required/>
+                            <!-- <label for="image" class="text-center">Change Image</label> -->
+                            <small class="text-danger" id="change_image_err"></small>
+                        </div>
+                    </div>
+                    <input class="form-control" name="current_name" value="{{user.username}}" type="hidden" />
+                    <div id="loading" class="container text-center">
+
+                    </div>
+                    <div class="mt-5">
+                        <button type="submit" class="btn-rounded btn btn-outline-info btn-block my-4 waves-effect">Change</button>
+                    </div>
+                </div>
+                {% if err%}
+                <p id="res" class="alert alert-danger text-center font-weight-bold">
+                    {{err}}
+                </p>
+                {%endif%}
+            </div>
+        </form>
+    </div>
+</div>
+{%endblock%}

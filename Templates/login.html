@@ -1,0 +1,81 @@
+{% extends 'base.html' %} {% block body %}
+<div class="container p-5 ">
+    <div class="container col-sm-6 col-md-8 border border-info p-5">
+        <p class="display-4 ">
+            <span class="">
+              Log<span class="bg-info text-light rounded font-weight-bold">IN</span>
+            </span>
+
+        </p>
+        <div class="mt-5 small">
+            <span class="form-group has-float-label">
+                    <input class="form-control form-control-sm" id="email" type="email" placeholder="email@example.com"/>
+                    <label for="email">Email</label>
+                </span>
+        </div>
+
+        <div class="mt-2 small">
+            <span class="form-group has-float-label">
+                    <input class="form-control form-control-sm" id="password" type="password" placeholder="********"/>
+                    <label for="password" >Password</label>
+                    
+                </span>
+        </div>
+        <div class="text-center">
+            <a href="#" class="btn btn-link text-center">Forgot Password</a>
+        </div>
+
+        <div class="mb-5">
+            <button type="submit" class="my-2 font-weight-bold btn btn-sm btn-success rounded form-control">Login</button>
+            <a href="{% url 'home' %}" class="mt-2 text-light font-weight-bold btn btn-sm btn-danger rounded form-control">Signup</a>
+        </div>
+    </div>
+</div>
+
+<!-- Nav Tabs -->
+<mdb-tabset #staticTabs [buttonClass]="'md-tabs tabs-secondary tabs-3'" [contentClass]="'card'">
+    <!--Panel 1-->
+    <mdb-tab heading="Profile">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit magnam minima, soluta doloribus reiciendis molestiae placeat unde eos molestias. Quisquam aperiam, pariatur. Tempora, placeat ratione porro voluptate odit minima.</p>
+            </div>
+        </div>
+    </mdb-tab>
+    <!--Panel 2-->
+    <mdb-tab heading="Follow" [disabled]="true">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit magnam minima, soluta doloribus reiciendis molestiae placeat unde eos molestias. Quisquam aperiam, pariatur. Tempora, placeat ratione porro voluptate odit minima.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit magnam minima, soluta doloribus reiciendis molestiae placeat unde eos molestias. Quisquam aperiam, pariatur. Tempora, placeat ratione porro voluptate odit minima.</p>
+            </div>
+        </div>
+    </mdb-tab>
+    <!--Panel 3-->
+    <mdb-tab heading="Contact">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit magnam minima, soluta doloribus reiciendis molestiae placeat unde eos molestias. Quisquam aperiam, pariatur. Tempora, placeat ratione porro voluptate odit minima.</p>
+            </div>
+        </div>
+    </mdb-tab>
+</mdb-tabset>
+<script type="text/javascript">
+    function a() {
+        console.log('aa');
+        $.ajax({
+            url: "{% url 'home' %}",
+            type: 'POST',
+            data: {
+                a: '11'
+            },
+            success: function(data) {
+                console.log(data);
+            }
+        });
+    }
+</script>
+{% endblock body %}

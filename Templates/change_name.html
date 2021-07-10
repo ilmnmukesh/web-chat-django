@@ -1,0 +1,78 @@
+{% extends 'base.html' %} {% block body %}
+<div class="container p-md-5 pt-5">
+    <div class="border-0">
+        <form method="POST" action="{% url 'update_name' %}">
+            {%csrf_token%}
+            <div class="container col-sm-6 col-md-8 p-md-5 pt-5">
+                <p class="h1">
+                    Change
+                    <span class="bg-info text-white rounded font-weight-bold">Username</span>
+                </p>
+                <div id="forgot_content">
+                    <div class="mt-5 small">
+                        <div class="md-form">
+                            <input class="form-control" value="{{user.username}}" type="text" disabled/>
+                            <label class="text-center">Current Name</label>
+                            <small class="text-danger">Change your name may loss your chat history</small>
+                        </div>
+                    </div>
+                    <div class="mt-5 small">
+                        <div class="md-form">
+                            <input onkeyup="checkUsername()" class="form-control" id="username" name="username" type="text" required/>
+                            <label for="login_signup" class="text-center">New Name</label>
+                            <small class="text-danger" id="err_change_username"></small>
+                        </div>
+                    </div>
+                    <input class="form-control" name="current_name" value="{{user.username}}" type="hidden" />
+                    <div id="loading" class="container text-center">
+
+                    </div>
+                    <div class="mt-5">
+                        <button type="submit" class="btn-rounded btn btn-outline-info btn-block my-4 waves-effect">Change</button>
+                    </div>
+                </div>
+                {% if err%}
+                <p id="res" class="alert alert-danger text-center font-weight-bold">
+                    {{err}}
+                </p>
+                {%endif%}
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function checkUsername() {
+        const replay = new XMLHttpRequest();
+        let username = document.getElementById("username")
+        replay.onload = function() {
+            let responseValue = null;
+
+            try {
+                responseValue = JSON.parse(replay.responseText);
+            } catch (e) {
+                console.log("Could not parse json");
+            }
+            if (responseValue) {
+
+                if (responseValue.valid) {
+                    username.classList.remove('is-invalid');
+                    username.classList.add('is-valid');
+                    document.getElementById('err_change_username').innerHTML = '';
+                } else {
+                    username.classList.remove('is-valid');
+                    username.classList.add('is-invalid');
+                    document.getElementById('err_change_username').innerHTML = 'Username Already Exists';
+                }
+            }
+        };
+
+        let body = new FormData();
+        body.append('username', JSON.stringify(username.value));
+        body.append('checkUsername', JSON.stringify(1));
+
+        replay.open("POST", "{% url 'login' %}");
+        replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        replay.send(body);
+    }
+</script>
+{%endblock%}
